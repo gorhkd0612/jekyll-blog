@@ -1,38 +1,19 @@
 ---
-layout: default
+layout: main
 ---
-<div class="col-md-9 col-content">
-    {% for post in paginator.posts %}
-      {% include posts.html%}
-    {% endfor %}
-    <nav>
-        <ul class="pagination pagination-posts">
-          {% if paginator.total_pages > 1 %}
-              {% if paginator.previous_page %}
-                <li>
-                  <a href="{{ paginator.previous_page_path | prepend: site.url}}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-                </li>
-              {% endif %}
-              {% for page in (1..paginator.total_pages) %}
-                  {% if page == paginator.page %}
-                    <li class="active"><span>{{ page }}</span></li>
-                  {% elsif page == 1 %}
-                    <li><a href="{{ site.url }}">{{ page }}</a></li>
-                  {% else %}
-                    <li><a href="{{ site.url}}/page/{{ page }}">{{ page }}</a></li>
-                  {% endif %}
-                  {% endfor %}
-              {% if !paginator.next_page %}
-                  <li>
-                    <a href="{{ paginator.next_page_path | prepend: site.url}}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-                  </li>
-              {% endif %}
-            {% endif %}
-        </ul>
-    </nav>
-</div>
-<div class="col-md-3 col-sidebar">
-    {% include author.html%}
-    {% include categories.html%}
-    {% include tags.html%}
-</div>
+{% for post in paginator.posts %}
+<article class="post">
+  {% if post.img %}
+    <a class="post-thumbnail" style="background-image: url({{"/assets/img/" | prepend: site.baseurl | append : post.img}})" href="{{post.url | prepend: site.baseurl}}"></a>
+  {% else %}
+  {% endif %}
+  <div class="post-content">
+    <h2 class="post-title"><a href="{{post.url | prepend: site.baseurl}}">{{post.title}}</a></h2>
+    <p>{{ post.content | strip_html | truncatewords: 15 }}</p>
+    <span class="post-date">{{post.date | date: '%Y, %b %d'}}&nbsp;&nbsp;&nbsp;—&nbsp;</span>
+    <span class="post-words">{% capture words %}{{ post.content | number_of_words }}{% endcapture %}{% unless words contains "-" %}{{ words | plus: 250 | divided_by: 250 | append: " minute read" }}{% endunless %}</span>
+  </div>
+</article>
+{% endfor %}
+
+{% include pagination.html %}
